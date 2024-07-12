@@ -62,11 +62,15 @@ def calculate_dist(enc_v1_proto, enc_reg_proto):
 
     dist *= mask
 
-    mean_value = 0.05265717188507515
-    std_value = 0.10308924568735615
+    alpha = 0.52
+    beta = 0.7
 
     # 지정된 index를 제외한 나머지 index에 대한 값은 감마 분포를 따르도록 설정
-    err = np.random.normal(loc= mean_value,scale= std_value, size=128)
+    err = np.random.gamma(alpha, 1/beta, size=128)
+
+    while (err > 0.55).any():  # 값이 0.55를 넘어가면 다시 뽑습니다.
+        err = np.random.gamma(alpha, 1/beta, size=128)
+
     err[idx] = 0
     dist += err
 
